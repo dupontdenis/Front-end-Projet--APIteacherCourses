@@ -1,0 +1,180 @@
+# API TeacherCourse - REST Client requests
+
+# Usage notes:
+# - Start MongoDB and run `node app.js` in the project root.
+# - Use the REST Client extension (or similar) to run the requests in this file.
+# - Replace `{{TEACHER_ID}}` and `{{COURSE_ID}}` placeholders with actual IDs returned by the API.
+
+
+### Seeded data (from `populate.mjs`)
+
+Running `npm run seed` will insert the following teachers and courses (seed code shown):
+
+Teachers (seed objects):
+
+```json
+[
+  { "name": "Teacher 1", "dateOfBirth": "2000-01-01", "dateOfDeath": "" },
+  { "name": "Teacher 2", "dateOfBirth": "2000-01-01", "dateOfDeath": "" }
+]
+```
+
+Courses (seed objects — note these reference the inserted teacher IDs):
+
+```json
+[
+  { "title": "HTML & CSS", "teachers": ["<TEACHER_1_ID>"], "summary": "An introductory course on building websites using HTML and CSS." },
+  { "title": "Introduction to Algorithms", "teachers": ["<TEACHER_1_ID>", "<TEACHER_2_ID>"], "summary": "Comprehensive introduction to algorithms and data structures, widely used as a textbook in computer science courses." }
+]
+```
+
+If you prefer to create the seed objects manually via these requests, run the two `POST /teachers` requests below first, then use the returned IDs in the `POST /courses` requests that follow.
+
+### Seed: create Teacher 1
+POST http://localhost:3000/teachers
+Content-Type: application/json
+
+{
+  "name": "Teacher 1",
+  "dateOfBirth": "2000-01-01",
+  "dateOfDeath": ""
+}
+
+### Seed: create Teacher 2
+POST http://localhost:3000/teachers
+Content-Type: application/json
+
+{
+  "name": "Teacher 2",
+  "dateOfBirth": "2000-01-01",
+  "dateOfDeath": ""
+}
+
+### Example: create a course using a seeded teacher (replace placeholder)
+POST http://localhost:3000/courses
+Content-Type: application/json
+
+{
+  "title": "HTML & CSS",
+  "teachers": ["{{TEACHER_1_ID}}"],
+  "summary": "An introductory course on building websites using HTML and CSS."
+}
+
+### Example: create a course with multiple seeded teachers
+POST http://localhost:3000/courses
+Content-Type: application/json
+
+{
+  "title": "Introduction to Algorithms",
+  "teachers": ["{{TEACHER_1_ID}}", "{{TEACHER_2_ID}}"],
+  "summary": "Comprehensive introduction to algorithms and data structures, widely used as a textbook in computer science courses."
+}
+
+
+### Create a teacher
+POST http://localhost:3000/teachers
+Content-Type: application/json
+
+{
+  "name": "Alice Example",
+  "dateOfBirth": "1985-04-12",
+  "dateOfDeath": null
+}
+
+### List teachers
+GET http://localhost:3000/teachers
+
+### Get a teacher by ID
+GET http://localhost:3000/teachers/691c6314c94ea9888d7ff177
+
+### Update a teacher
+PUT http://localhost:3000/teachers/{{TEACHER_ID}}
+Content-Type: application/json
+
+{
+  "name": "Alice Updated",
+  "dateOfBirth": "1985-04-12",
+  "dateOfDeath": null
+}
+
+### Delete a teacher
+DELETE http://localhost:3000/teachers/{{TEACHER_ID}}
+
+### Create a course (use an existing teacher id in the teachers array)
+POST http://localhost:3000/courses
+Content-Type: application/json
+
+{
+  "title": "Example Course",
+  "teachers": ["691de36e8fec4a517b9e7030"]
+}
+
+### List courses (teachers populated)
+GET http://localhost:3000/courses
+
+### Get a course by ID
+GET http://localhost:3000/courses/{{COURSE_ID}}
+
+### Update a course
+PUT http://localhost:3000/courses/{{COURSE_ID}}
+Content-Type: application/json
+
+{
+  "title": "Example Course (Updated)",
+  "teachers": ["{{TEACHER_ID}}"]
+}
+
+### Delete a course
+DELETE http://localhost:3000/courses/{{COURSE_ID}}
+
+### Quick Tests
+
+# Note: replace placeholders (`{{TEACHER_ID}}`, `{{COURSE_ID}}`, or `{{JANE_AUSTEN_ID}}`) with real IDs from `GET /teachers` after running `npm run seed`.
+
+### 1) List all teachers (verify seeder)
+GET http://localhost:3000/teachers
+
+### 2) List all courses
+GET http://localhost:3000/courses
+
+### 3) Get courses by teacher (query param)
+GET http://localhost:3000/courses?teacher={{JANE_AUSTEN_ID}}
+
+### 4) Get courses by teacher (teacher sub-route)
+GET http://localhost:3000/teachers/{{JANE_AUSTEN_ID}}/courses
+
+### 5) Get teachers for a course
+GET http://localhost:3000/courses/{{COURSE_ID}}/teachers
+
+### 6) Create a teacher (test create)
+POST http://localhost:3000/teachers
+Content-Type: application/json
+
+{
+  "name": "Test Teacher",
+  "dateOfBirth": "1990-01-01",
+  "dateOfDeath": null
+}
+
+### 7) Create a course using an existing teacher
+POST http://localhost:3000/courses
+Content-Type: application/json
+
+{
+  "title": "Test Course",
+  "teachers": ["{{TEACHER_ID}}"]
+}
+
+### 8) Update the test course (replace COURSE_ID)
+PUT http://localhost:3000/courses/{{COURSE_ID}}
+Content-Type: application/json
+
+{
+  "title": "Test Course (Updated)",
+  "teachers": ["{{TEACHER_ID}}"]
+}
+
+### 9) Cleanup: delete created course and teacher (replace IDs)
+DELETE http://localhost:3000/courses/{{COURSE_ID}}
+DELETE http://localhost:3000/teachers/{{TEACHER_ID}}
+
