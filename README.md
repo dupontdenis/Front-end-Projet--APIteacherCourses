@@ -1,22 +1,17 @@
-# APIBookAuthor
+# APICoursesTeachers
 
 ## Overview
 
-## How to retrieve all books for a given author (the "trick")
+This repository provides a small REST API to manage teachers and courses (Node.js, Express, Mongoose). This README explains how to run the API, seed example data, and the available endpoints with examples.
 
-To get all books written by a specific author, query the `Book` collection for documents where the `authors` array contains the author's `_id`:
+## How to retrieve all courses for a given teacher
+
+To get all courses taught by a specific teacher, query the `Course` collection for documents where the `teachers` array contains the teacher's `_id`:
 
 ```js
 // In a controller or route:
-const books = await Book.find({ authors: authorId });
+const courses = await Course.find({ teachers: teacherId });
 ```
-
-Or with REST Client/cURL:
-
-# APIBookAuthor — API Documentation
-
-This repository provides a small REST API to manage authors and books (Node.js, Express, Mongoose).
-This README focuses on the API: how to run it, seed data, and the available endpoints with examples.
 
 ## Run locally
 
@@ -24,7 +19,7 @@ Install dependencies and start the server:
 
 ```bash
 npm install
-# Seed the database (this will erase authors and books):
+# Seed the database (this will erase teachers and courses):
 npm run seed
 # Start the server:
 npm start
@@ -49,29 +44,29 @@ npm run dev
 
 ## Seeded data
 
-Running `npm run seed` inserts example authors and books into the database. The seeder adds these authors:
+Running `npm run seed` inserts example teachers and courses into the database. The seeder adds these teachers:
 
-- Jane Austen
-- George Orwell
-- J.K. Rowling
+- Alice Smith
+- Bob Johnson
+- Claire Martin
 
-To see the seeded authors and their `_id` values:
+To see the seeded teachers and their `_id` values:
 
 ```
-GET http://localhost:3000/authors
+GET http://localhost:3000/teachers
 ```
 
-Copy an author's `_id` to use when creating books.
+Copy a teacher's `_id` to use when creating courses.
 
 ## API Endpoints
 
 Base URL: `http://localhost:3000`
 
-Authors
+Teachers
 
-- Create an author
+- Create a teacher
 
-  POST /authors
+  POST /teachers
   Content-Type: application/json
 
   Body example:
@@ -79,22 +74,22 @@ Authors
   ```json
   {
     "name": "Alice Example",
-    "dateOfBirth": "1985-04-12",
-    "dateOfDeath": null
+    "email": "alice@example.com",
+    "department": "Mathematics"
   }
   ```
 
-- List authors
+- List teachers
 
-  GET /authors
+  GET /teachers
 
-- Get author by id
+- Get teacher by id
 
-  GET /authors/:id
+  GET /teachers/:id
 
-- Update author
+- Update teacher
 
-  PUT /authors/:id
+  PUT /teachers/:id
   Content-Type: application/json
 
   Body example:
@@ -102,76 +97,76 @@ Authors
   ```json
   {
     "name": "Alice Updated",
-    "dateOfBirth": "1985-04-12",
-    "dateOfDeath": null
+    "email": "alice@example.com",
+    "department": "Mathematics"
   }
   ```
 
-- Delete author
+- Delete teacher
 
-  DELETE /authors/:id
+  DELETE /teachers/:id
 
-Books
+Courses
 
-- Create a book (use existing author ids)
+- Create a course (use existing teacher ids)
 
-  POST /books
+  POST /courses
   Content-Type: application/json
 
-  Body example (single author):
+  Body example (single teacher):
 
   ```json
   {
-    "title": "Example Book",
-    "authors": ["<AUTHOR_ID>"]
+    "title": "Intro to Algebra",
+    "teachers": ["<TEACHER_ID>"]
   }
   ```
 
-  Body example (multiple authors):
+  Body example (multiple teachers):
 
   ```json
   {
-    "title": "Collected Works (Seeded)",
-    "authors": ["<AUTHOR_ID_1>", "<AUTHOR_ID_2>"]
+    "title": "Advanced Topics (Team-taught)",
+    "teachers": ["<TEACHER_ID_1>", "<TEACHER_ID_2>"]
   }
   ```
 
-- List books
+- List courses
 
-  GET /books
+  GET /courses
 
-- Get book by id
+- Get course by id
 
-  GET /books/:id
+  GET /courses/:id
 
-- Update book
+- Update course
 
-  PUT /books/:id
+  PUT /courses/:id
   Content-Type: application/json
 
   Body example:
 
   ```json
   {
-    "title": "Example Book (Updated)",
-    "authors": ["<AUTHOR_ID>"]
+    "title": "Intro to Algebra (Updated)",
+    "teachers": ["<TEACHER_ID>"]
   }
   ```
 
-- Delete book
+- Delete course
 
-  DELETE /books/:id
+  DELETE /courses/:id
 
 ## Using seeded IDs in requests
 
 1. Run the seeder: `npm run seed`.
-2. Get authors: `GET /authors` and copy an `_id` value.
-3. Use that `_id` in the `authors` array when creating a book.
+2. Get teachers: `GET /teachers` and copy an `_id` value.
+3. Use that `_id` in the `teachers` array when creating a course.
 
 ## Notes
 
-- The `authors` field on a `Book` document stores ObjectId references to `Author` documents. The API returns raw references by default. If you need populated author objects, you can populate them in the controller or add a query option to return populated results.
-- The seeder will erase the `authors` and `books` collections — do not run it in production.
+- The `teachers` field on a `Course` document stores ObjectId references to `Teacher` documents. The API returns raw references by default. If you need populated teacher objects, you can populate them in the controller or add a query option to return populated results.
+- The seeder will erase the `teachers` and `courses` collections — do not run it in production.
 
 ---
 
@@ -179,10 +174,10 @@ If you'd like, I can add: a) example responses for each endpoint, b) a short Pos
 
 ## Frontend tester
 
-A minimal static frontend is included to quickly test the `GET /authors` and `GET /books` endpoints.
+A minimal static frontend is included to quickly test the `GET /teachers` and `GET /courses` endpoints.
 
 - Open the app at: `http://localhost:3000/` after starting the server.
-- Click **Load Authors** to fetch `GET /authors` and show authors.
-- Click **Load Books** to fetch `GET /books` and show books (populated authors shown when available).
+- Click **Load Teachers** to fetch `GET /teachers` and show teachers.
+- Click **Load Courses** to fetch `GET /courses` and show courses (populated teachers shown when available).
 
 The frontend files are in the `public/` folder: `index.html`, `main.js`, and `style.css`.
