@@ -44,11 +44,7 @@ npm run dev
 
 ## Seeded data
 
-Running `npm run seed` inserts example teachers and courses into the database. The seeder adds these teachers:
-
-- Alice Smith
-- Bob Johnson
-- Claire Martin
+Running `npm run seed` inserts example teachers and courses into the database. The seeder populates sample teachers and courses as defined in `populate.mjs` (for example `Teacher 1`, `Teacher 2`).
 
 To see the seeded teachers and their `_id` values:
 

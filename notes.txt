@@ -1,28 +1,28 @@
 // si pas populate ! 
-// book.authors = ['691c6...', '691d...']
+// course.teachers = ['691c6...', '691d...']
 const names = await Promise.all(
-  book.authors.map(id =>
-    fetch(`/authors/${id}`).then(r => {
-      if (!r.ok) throw new Error('author fetch failed');
+  course.teachers.map(id =>
+    fetch(`/teachers/${id}`).then(r => {
+      if (!r.ok) throw new Error('teacher fetch failed');
       return r.json();
-    }).then(a => a.name)
+    }).then(t => t.name)
   )
 );
-book.authors = names; // replace ids with names
+course.teachers = names; // replace ids with names
 
 -----------
-Better: batch on the server — add an endpoint that accepts multiple ids and returns the authors in one query:
-// GET /authors?ids=691c6...,691d...
+Better: batch on the server — add an endpoint that accepts multiple ids and returns the teachers in one query:
+// GET /teachers?ids=691c6...,691d...
 // Server (Express + Mongoose)
-router.get('/authors', async (req, res) => {
+router.get('/teachers', async (req, res) => {
   const ids = (req.query.ids || '').split(',').filter(Boolean);
-  const authors = await Author.find({ _id: { $in: ids } }, 'name'); // only name field
-  res.json(authors);
+  const teachers = await Teacher.find({ _id: { $in: ids } }, 'name'); // only name field
+  res.json(teachers);
 });
 
 Client side:
-const ids = book.authors.join(',');
-const resp = await fetch(`/authors?ids=${encodeURIComponent(ids)}`);
-const authors = await resp.json();
-const map = new Map(authors.map(a => [a._id, a.name]));
-book.authors = book.authors.map(id => map.get(id) || null);
+const ids = course.teachers.join(',');
+const resp = await fetch(`/teachers?ids=${encodeURIComponent(ids)}`);
+const teachers = await resp.json();
+const map = new Map(teachers.map(t => [t._id, t.name]));
+course.teachers = course.teachers.map(id => map.get(id) || null);
